@@ -3,6 +3,8 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Net.Http;
 
 namespace CK_CTDL
 {
@@ -17,7 +19,7 @@ namespace CK_CTDL
         {
 
             lvHistory.Columns.Add("Tên file", 125);
-            lvHistory.Columns.Add("Kết quả", 200);
+            lvHistory.Columns.Add("Kết quả", 150);
             lvHistory.Columns.Add("Thời gian", 100);
             lvHistory.MouseClick += lvHistory_MouseClick;
 
@@ -41,7 +43,7 @@ namespace CK_CTDL
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                
+
                 int x = 0;
                 int i = files.Length;
                 lblGuild.Text = $"Bạn đã kéo thêm vào {i} file !";
@@ -58,11 +60,11 @@ namespace CK_CTDL
                         txtHtml.AppendText(content + Environment.NewLine);
                         x++;
 
-                        if(x == i - 1)
+                        if (x == i - 1)
                         {
                             txtHtml.Text = "";
                         }
-                          
+
                         ShowResult(content, Path.GetFileName(filePath));
                     }
                     catch (Exception ex)
@@ -85,6 +87,8 @@ namespace CK_CTDL
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     string html = File.ReadAllText(ofd.FileName);
+                    txtHtml.Font = new Font("Consolas", 9, FontStyle.Regular);
+                    txtHtml.TextAlign = HorizontalAlignment.Left;
                     txtHtml.Text = html;
                     ShowResult(html, Path.GetFileName(ofd.FileName));
                 }
@@ -103,19 +107,85 @@ namespace CK_CTDL
 
         //====================== Nút Xóa ==========================
 
+        
         private void btnClear_Click(object sender, EventArgs e)
         {
-            txtHtml.Clear();
-            txtHtml.TextAlign = HorizontalAlignment.Center;
-            txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
-            txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
-            lblOutput.ForeColor = Color.LightGray;
-            lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
-            lblOutput.Text = "Hiển thị kết quả tại đây";
-            lvHistory.Items.Clear();
+                      
+                if (lvHistory.SelectedItems.Count > 0)
+                {
+                    ListViewItem selectedItem = lvHistory.SelectedItems[0];
 
+                    // Kiểm tra nếu còn item trong danh sách
+                    if (lvHistory.Items.Count > 0)
+                    {
+                        int index = selectedItem.Index;
+
+                        // Kiểm tra nếu có item trước item đã chọn
+                        if (index >= 0 && index < lvHistory.Items.Count - 1)
+                        {
+                            // Lấy item trước đó và hiển thị nội dung
+                            ListViewItem previousItem = lvHistory.Items[index + 1];
+                            string previousItemContent = previousItem.SubItems[1].Text;
+                            lblOutput.Text = $"⟳ Đang xem lại: [{previousItem.Text}] \n {previousItemContent}";
+                            txtHtml.Text = previousItem.Tag as string; // Load lại nội dung của item trước
+                        }
+                        else
+                        {
+                            if (index == lvHistory.Items.Count - 1 && lvHistory.Items.Count > 1)
+                            {
+                                ListViewItem lastItem = lvHistory.Items[index - 1];
+                                lblOutput.Text = $"⟳ Đang xem lại: [{lastItem.Text}] \n {lastItem.SubItems[1].Text}";
+                                txtHtml.Text = lastItem.Tag as string; // Load lại nội dung của item đầu tiên
+                            }
+                            else
+                            {
+                                if (index == 0)
+                                {
+                                    txtHtml.Text = "";
+                                    txtHtml.TextAlign = HorizontalAlignment.Center;
+                                    txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                                    txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
+                                    lblOutput.ForeColor = Color.LightGray;
+                                    lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                                    lblOutput.Text = "Hiển thị kết quả tại đây";
+                                }
+                                else
+                                {
+                                    // Nếu không có item được chọn, chỉ xóa toàn bộ dữ liệu trong ListView
+                                    if (lvHistory.Items.Count > 0)
+                                    {
+                                        lvHistory.Items.Clear();
+                                        txtHtml.Clear();
+                                        txtHtml.TextAlign = HorizontalAlignment.Center;
+                                        txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
+                                        txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                                        lblOutput.ForeColor = Color.LightGray;
+                                        lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                                        lblOutput.Text = "Hiển thị kết quả tại đây";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    lblGuild.Text = $"Đã xóa 1 file: [{selectedItem.Text}]";
+                    lvHistory.Items.Remove(selectedItem);
+                }
+                else
+                {
+                    // Nếu không có item được chọn, chỉ xóa toàn bộ dữ liệu trong ListView
+                    
+                        lvHistory.Items.Clear();
+                        txtHtml.Clear();
+                        txtHtml.TextAlign = HorizontalAlignment.Center;
+                        txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
+                        txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                        lblOutput.ForeColor = Color.LightGray;
+                        lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                        lblOutput.Text = "Hiển thị kết quả tại đây";
+                    
+                }
+            
         }
-
 
 
         // ================= HIỆN KQUẢ ==========================
@@ -127,6 +197,9 @@ namespace CK_CTDL
                 lblOutput.Font = new Font("Segoe UI", 11, FontStyle.Bold);
                 lblOutput.Text = "⚠ HTML trống. Không có gì để kiểm tra.";
                 lblOutput.ForeColor = Color.DarkOrange;
+                txtHtml.TextAlign = HorizontalAlignment.Center;
+                txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
                 return;
             }
 
@@ -196,7 +269,7 @@ namespace CK_CTDL
         public static class HtmlValidator
         {
             // Danh sách các void tags theo chuẩn HTML5
-            static string[] voidTags = 
+            static string[] voidTags =
             {
               "area", "base", "br", "col", "embed", "hr",
               "img", "input", "link", "meta", "source", "track", "wbr"
@@ -219,6 +292,7 @@ namespace CK_CTDL
                 }
 
                 MyQueue<string> temp = new MyQueue<string>();
+                List<string> errors = new List<string>();
 
                 while (!queue.IsEmpty())
                 {
@@ -272,14 +346,21 @@ namespace CK_CTDL
 
                         if (!found)
                         {
-                            return $"❌ Lỗi: Thẻ đóng </{tagName}> không có thẻ mở tương ứng.";
+                            errors.Add($"❌ Lỗi: Thẻ đóng </{tagName}> không có thẻ mở tương ứng.");
                         }
                     }
                 }
 
-                if (!temp.IsEmpty())
+                while (!temp.IsEmpty())
                 {
-                    return "❌ Lỗi: Có thẻ mở chưa được đóng.";
+                    string unclosedTag = temp.Dequeue();
+                    string unclosedName = GetTagName(unclosedTag).ToLower();
+                    errors.Add($"❌ Lỗi: Thẻ mở <{unclosedName}> chưa được đóng.");
+                }
+
+                if (errors.Count > 0)
+                {
+                    return string.Join("\n", errors);
                 }
 
                 return "✅ HTML hợp lệ.";
@@ -302,6 +383,7 @@ namespace CK_CTDL
                 }
                 return false;
             }
+
         }
 
 
@@ -348,7 +430,15 @@ namespace CK_CTDL
         {
             lblGuild.Font = new Font("Segoe UI", 9);
             lblGuild.ForeColor = Color.SlateGray;
-            lblGuild.Text = "Nhấn vào đây để xóa toàn bộ dữ liệu !";
+            if (lvHistory.SelectedItems.Count > 0)
+            {
+                ListViewItem TenFile = lvHistory.SelectedItems[0];
+                string name = TenFile.Text;
+                lblGuild.Text = $"Bạn có muốn xóa file [{name}] không?";
+            }
+            else
+                
+                lblGuild.Text = "Nhấn vào đây để xóa toàn bộ dữ liệu/ Nhấn vào file bạn muốn xóa !";
         }
 
 
@@ -359,15 +449,13 @@ namespace CK_CTDL
             lblGuild.Text = "Nhấn vào đây để mở file !";
         }
 
-       
+
         private void lvHistory_MouseEnter(object sender, EventArgs e)
         {
             lblGuild.Font = new Font("Segoe UI", 9);
             lblGuild.ForeColor = Color.SlateGray;
             lblGuild.Text = "Nhấp vào nội dung cũ bạn muốn xem !";
         }
-
-       
 
     }
 }

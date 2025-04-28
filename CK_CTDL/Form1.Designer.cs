@@ -95,7 +95,7 @@
             txtHtml.Location = new Point(27, 23);
             txtHtml.Multiline = true;
             txtHtml.Name = "txtHtml";
-            txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML vào đây";
+            txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
             txtHtml.ScrollBars = ScrollBars.Both;
             txtHtml.Size = new Size(787, 306);
             txtHtml.TabIndex = 9;
