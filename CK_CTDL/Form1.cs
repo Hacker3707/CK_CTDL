@@ -107,84 +107,84 @@ namespace CK_CTDL
 
         //====================== Nút Xóa ==========================
 
-        
+
         private void btnClear_Click(object sender, EventArgs e)
         {
-                      
-                if (lvHistory.SelectedItems.Count > 0)
+
+            if (lvHistory.SelectedItems.Count > 0)
+            {
+                ListViewItem selectedItem = lvHistory.SelectedItems[0];
+
+                // Kiểm tra nếu còn item trong danh sách
+                if (lvHistory.Items.Count > 0)
                 {
-                    ListViewItem selectedItem = lvHistory.SelectedItems[0];
+                    int index = selectedItem.Index;
 
-                    // Kiểm tra nếu còn item trong danh sách
-                    if (lvHistory.Items.Count > 0)
+                    // Kiểm tra nếu có item trước item đã chọn
+                    if (index >= 0 && index < lvHistory.Items.Count - 1)
                     {
-                        int index = selectedItem.Index;
-
-                        // Kiểm tra nếu có item trước item đã chọn
-                        if (index >= 0 && index < lvHistory.Items.Count - 1)
+                        // Lấy item trước đó và hiển thị nội dung
+                        ListViewItem previousItem = lvHistory.Items[index + 1];
+                        string previousItemContent = previousItem.SubItems[1].Text;
+                        lblOutput.Text = $"⟳ Đang xem lại: [{previousItem.Text}] \n {previousItemContent}";
+                        txtHtml.Text = previousItem.Tag as string; // Load lại nội dung của item trước
+                    }
+                    else
+                    {
+                        if (index == lvHistory.Items.Count - 1 && lvHistory.Items.Count > 1)
                         {
-                            // Lấy item trước đó và hiển thị nội dung
-                            ListViewItem previousItem = lvHistory.Items[index + 1];
-                            string previousItemContent = previousItem.SubItems[1].Text;
-                            lblOutput.Text = $"⟳ Đang xem lại: [{previousItem.Text}] \n {previousItemContent}";
-                            txtHtml.Text = previousItem.Tag as string; // Load lại nội dung của item trước
+                            ListViewItem lastItem = lvHistory.Items[index - 1];
+                            lblOutput.Text = $"⟳ Đang xem lại: [{lastItem.Text}] \n {lastItem.SubItems[1].Text}";
+                            txtHtml.Text = lastItem.Tag as string; // Load lại nội dung của item đầu tiên
                         }
                         else
                         {
-                            if (index == lvHistory.Items.Count - 1 && lvHistory.Items.Count > 1)
+                            if (index == 0)
                             {
-                                ListViewItem lastItem = lvHistory.Items[index - 1];
-                                lblOutput.Text = $"⟳ Đang xem lại: [{lastItem.Text}] \n {lastItem.SubItems[1].Text}";
-                                txtHtml.Text = lastItem.Tag as string; // Load lại nội dung của item đầu tiên
+                                txtHtml.Text = "";
+                                txtHtml.TextAlign = HorizontalAlignment.Center;
+                                txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                                txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
+                                lblOutput.ForeColor = Color.LightGray;
+                                lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                                lblOutput.Text = "Hiển thị kết quả tại đây";
                             }
                             else
                             {
-                                if (index == 0)
+                                // Nếu không có item được chọn, chỉ xóa toàn bộ dữ liệu trong ListView
+                                if (lvHistory.Items.Count > 0)
                                 {
-                                    txtHtml.Text = "";
+                                    lvHistory.Items.Clear();
+                                    txtHtml.Clear();
                                     txtHtml.TextAlign = HorizontalAlignment.Center;
-                                    txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
                                     txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
+                                    txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
                                     lblOutput.ForeColor = Color.LightGray;
                                     lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
                                     lblOutput.Text = "Hiển thị kết quả tại đây";
                                 }
-                                else
-                                {
-                                    // Nếu không có item được chọn, chỉ xóa toàn bộ dữ liệu trong ListView
-                                    if (lvHistory.Items.Count > 0)
-                                    {
-                                        lvHistory.Items.Clear();
-                                        txtHtml.Clear();
-                                        txtHtml.TextAlign = HorizontalAlignment.Center;
-                                        txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
-                                        txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
-                                        lblOutput.ForeColor = Color.LightGray;
-                                        lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
-                                        lblOutput.Text = "Hiển thị kết quả tại đây";
-                                    }
-                                }
                             }
                         }
                     }
-                    lblGuild.Text = $"Đã xóa 1 file: [{selectedItem.Text}]";
-                    lvHistory.Items.Remove(selectedItem);
                 }
-                else
-                {
-                    // Nếu không có item được chọn, chỉ xóa toàn bộ dữ liệu trong ListView
-                    
-                        lvHistory.Items.Clear();
-                        txtHtml.Clear();
-                        txtHtml.TextAlign = HorizontalAlignment.Center;
-                        txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
-                        txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
-                        lblOutput.ForeColor = Color.LightGray;
-                        lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
-                        lblOutput.Text = "Hiển thị kết quả tại đây";
-                    
-                }
-            
+                lblGuild.Text = $"Đã xóa 1 file: [{selectedItem.Text}]";
+                lvHistory.Items.Remove(selectedItem);
+            }
+            else
+            {
+                // Nếu không có item được chọn, chỉ xóa toàn bộ dữ liệu trong ListView
+
+                lvHistory.Items.Clear();
+                txtHtml.Clear();
+                txtHtml.TextAlign = HorizontalAlignment.Center;
+                txtHtml.PlaceholderText = "Nhập/Kéo thả file HTML tại đây";
+                txtHtml.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                lblOutput.ForeColor = Color.LightGray;
+                lblOutput.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                lblOutput.Text = "Hiển thị kết quả tại đây";
+
+            }
+
         }
 
 
@@ -268,112 +268,106 @@ namespace CK_CTDL
         // ======================== VALIDATOR ========================
         public static class HtmlValidator
         {
-            // Danh sách các void tags theo chuẩn HTML5
             static string[] voidTags =
             {
-              "area", "base", "br", "col", "embed", "hr",
-              "img", "input", "link", "meta", "source", "track", "wbr"
+               "area", "base", "br", "col", "embed", "hr",
+               "img", "input", "link", "meta", "source", "track", "wbr"
             };
 
             public static string Validate(string html)
             {
-                MyQueue<string> queue = new MyQueue<string>();
-                MatchCollection matches = Regex.Matches(html, @"<\/?[a-zA-Z][a-zA-Z0-9]*[^>]*>");
-
-                foreach (Match match in matches)
-                {
-                    queue.Enqueue(match.Value);
-                }
-
-                // Nếu không có thẻ nào thì không hợp lệ
-                if (queue.IsEmpty())
+                MyQueue<string> queue = new MyQueue<string>();  // Queue dùng để lưu trữ thẻ mở
+                MyQueue<string> errors = new MyQueue<string>();  // Queue dùng để lưu trữ lỗi
+                MatchCollection matches = Regex.Matches(html, @"<\s*(\/)?\s*([a-zA-Z][a-zA-Z0-9]*)\b([^<>]*)\/?\s*>");
+                if (matches.Count == 0)
                 {
                     return "❌ Không phát hiện thẻ HTML nào.\n Đây có thể không phải là tài liệu HTML.";
                 }
-
-                MyQueue<string> temp = new MyQueue<string>();
-                List<string> errors = new List<string>();
-
-                while (!queue.IsEmpty())
+                foreach (Match match in matches)
                 {
-                    string tag = queue.Dequeue().Trim();
+                    string tag = match.Value.Trim();
 
                     // Bỏ qua doctype
                     if (tag.StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase))
                         continue;
 
-                    // Bỏ qua self-closing tag dạng <... />
-                    if (tag.EndsWith("/>")) continue;
+                    // Bỏ qua self-closing tag
+                    if (tag.EndsWith("/>"))
+                        continue;
 
-                    // Lấy tên thẻ
                     string tagName = GetTagName(tag).ToLower();
-
-                    // Nếu là void tag thì không cần đóng
                     if (IsVoidTag(tagName)) continue;
 
                     // Nếu là thẻ mở
                     if (!tag.StartsWith("</"))
                     {
-                        temp.Enqueue(tag);
+                        queue.Enqueue(tag);  // Thêm thẻ mở vào Queue
+
                     }
                     else
                     {
-                        // Là thẻ đóng
+                        // Thẻ đóng
+                        string closeTagName = tagName.ToLower().Replace("/", "");
                         bool found = false;
-                        MyQueue<string> backup = new MyQueue<string>();
+                        
+                        MyQueue<string> tempQueue = new MyQueue<string>();
 
-                        while (!temp.IsEmpty())
+                        // Tìm kiếm thẻ mở tương ứng với thẻ đóng
+                        while (!queue.IsEmpty())
                         {
-                            string openTag = temp.Dequeue();
-                            string openName = GetTagName(openTag).ToLower();
-
-                            if (openName == tagName)
+                            string openTag = queue.Dequeue();
+                            string openTagName = GetTagName(openTag).ToLower();
+                            if (openTagName == closeTagName)
                             {
                                 found = true;
                                 break;
                             }
                             else
                             {
-                                backup.Enqueue(openTag);
+                                tempQueue.Enqueue(openTag); // Lưu các thẻ mở chưa tìm thấy
                             }
                         }
 
-                        // Khôi phục temp
-                        while (!backup.IsEmpty())
+                        // Khôi phục Queue (những thẻ mở không khớp)
+                        while (!tempQueue.IsEmpty())
                         {
-                            temp.Enqueue(backup.Dequeue());
+                            queue.Enqueue(tempQueue.Dequeue());
                         }
 
                         if (!found)
                         {
-                            errors.Add($"❌ Lỗi: Thẻ đóng </{tagName}> không có thẻ mở tương ứng.");
+                            errors.Enqueue($"❌ Lỗi: Thẻ đóng </{tagName}> không có thẻ mở tương ứng.");
                         }
                     }
                 }
 
-                while (!temp.IsEmpty())
+                // Nếu còn thẻ mở trong Queue, nghĩa là chúng chưa được đóng
+                while (!queue.IsEmpty())
                 {
-                    string unclosedTag = temp.Dequeue();
+                    string unclosedTag = queue.Dequeue();
                     string unclosedName = GetTagName(unclosedTag).ToLower();
-                    errors.Add($"❌ Lỗi: Thẻ mở <{unclosedName}> chưa được đóng.");
+                    errors.Enqueue($"❌ Lỗi: Thẻ mở <{unclosedName}> chưa được đóng.");
                 }
 
-                if (errors.Count > 0)
+                // Trả về tất cả lỗi (nếu có)
+                if (!errors.IsEmpty())
                 {
-                    return string.Join("\n", errors);
+                    string allErrors = "";
+                    while (!errors.IsEmpty())
+                    {
+                        allErrors += errors.Dequeue() + "\n";
+                    }
+                    return allErrors.Trim();
                 }
 
                 return "✅ HTML hợp lệ.";
             }
 
-            // Hàm lấy tên thẻ từ tag <p class="x"> → p
             private static string GetTagName(string tag)
             {
                 Match m = Regex.Match(tag, @"^<\/?\s*([a-zA-Z0-9]+)");
                 return m.Success ? m.Groups[1].Value : "";
             }
-
-            // Kiểm tra có phải void tag không
             private static bool IsVoidTag(string tagName)
             {
                 foreach (var tag in voidTags)
@@ -385,7 +379,7 @@ namespace CK_CTDL
             }
 
         }
-
+    
 
 
         // ================= Thay đổi vị trí nhập ======================
