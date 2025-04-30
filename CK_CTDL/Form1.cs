@@ -46,7 +46,7 @@ namespace CK_CTDL
 
                 int x = 0;
                 int i = files.Length;
-                lblGuild.Text = $"Bạn đã kéo thêm vào {i} file !";
+                lblGuide.Text = $"Bạn đã kéo thêm vào {i} file !";
                 foreach (string filePath in files)
                 {
                     try
@@ -167,7 +167,7 @@ namespace CK_CTDL
                         }
                     }
                 }
-                lblGuild.Text = $"Đã xóa 1 file: [{selectedItem.Text}]";
+                lblGuide.Text = $"Đã xóa 1 file: [{selectedItem.Text}]";
                 lvHistory.Items.Remove(selectedItem);
             }
             else
@@ -410,45 +410,45 @@ namespace CK_CTDL
 
         private void btnCheck_MouseEnter(object sender, EventArgs e)
         {
-            lblGuild.Font = new Font("Segoe UI", 9);
-            lblGuild.ForeColor = Color.SlateGray;
-            lblGuild.Text = "Nhấn vào đây để kiểm tra !";
+            lblGuide.Font = new Font("Segoe UI", 9);
+            lblGuide.ForeColor = Color.SlateGray;
+            lblGuide.Text = "Nhấn vào đây để kiểm tra !";
         }
 
         private void MouseLeave(object sender, EventArgs e)
         {
-            lblGuild.Text = "";
+            lblGuide.Text = "";
         }
 
         private void btnClear_MouseEnter(object sender, EventArgs e)
         {
-            lblGuild.Font = new Font("Segoe UI", 9);
-            lblGuild.ForeColor = Color.SlateGray;
+            lblGuide.Font = new Font("Segoe UI", 9);
+            lblGuide.ForeColor = Color.SlateGray;
             if (lvHistory.SelectedItems.Count > 0)
             {
                 ListViewItem TenFile = lvHistory.SelectedItems[0];
                 string name = TenFile.Text;
-                lblGuild.Text = $"Bạn có muốn xóa file [{name}] không?";
+                lblGuide.Text = $"Bạn có muốn xóa file [{name}] không?";
             }
             else
                 
-                lblGuild.Text = "Nhấn vào đây để xóa toàn bộ dữ liệu/ Nhấn vào file bạn muốn xóa !";
+                lblGuide.Text = "Nhấn vào đây để xóa toàn bộ dữ liệu/ Nhấn vào file bạn muốn xóa !";
         }
 
 
         private void btnOpen_MouseEnter(object sender, EventArgs e)
         {
-            lblGuild.Font = new Font("Segoe UI", 9);
-            lblGuild.ForeColor = Color.SlateGray;
-            lblGuild.Text = "Nhấn vào đây để mở file !";
+            lblGuide.Font = new Font("Segoe UI", 9);
+            lblGuide.ForeColor = Color.SlateGray;
+            lblGuide.Text = "Nhấn vào đây để mở file !";
         }
 
 
         private void lvHistory_MouseEnter(object sender, EventArgs e)
         {
-            lblGuild.Font = new Font("Segoe UI", 9);
-            lblGuild.ForeColor = Color.SlateGray;
-            lblGuild.Text = "Nhấp vào nội dung cũ bạn muốn xem !";
+            lblGuide.Font = new Font("Segoe UI", 9);
+            lblGuide.ForeColor = Color.SlateGray;
+            lblGuide.Text = "Nhấp vào nội dung cũ bạn muốn xem !";
         }
 
     }

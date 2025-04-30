@@ -28,13 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Label lblOutput;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             btnCheck = new Button();
             btnClear = new Button();
             btnOpen = new Button();
             lvHistory = new ListView();
             txtHtml = new TextBox();
-            lblGuild = new Label();
+            lblGuide = new Label();
             lblOutput = new Label();
             SuspendLayout();
             // 
@@ -104,15 +105,15 @@
             txtHtml.DragDrop += txtHtml_DragDrop;
             txtHtml.DragEnter += txtHtml_DragEnter;
             // 
-            // lblGuild
+            // lblGuide
             // 
-            lblGuild.BackColor = SystemColors.Control;
-            lblGuild.ForeColor = SystemColors.AppWorkspace;
-            lblGuild.Location = new Point(23, 556);
-            lblGuild.Name = "lblGuild";
-            lblGuild.Size = new Size(787, 28);
-            lblGuild.TabIndex = 10;
-            lblGuild.Text = "Instruction here!";
+            lblGuide.BackColor = SystemColors.Control;
+            lblGuide.ForeColor = SystemColors.AppWorkspace;
+            lblGuide.Location = new Point(23, 556);
+            lblGuide.Name = "lblGuide";
+            lblGuide.Size = new Size(787, 28);
+            lblGuide.TabIndex = 10;
+            lblGuide.Text = "Instruction here!";
             // 
             // lblOutput
             // 
@@ -133,7 +134,7 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1208, 587);
-            Controls.Add(lblGuild);
+            Controls.Add(lblGuide);
             Controls.Add(txtHtml);
             Controls.Add(lvHistory);
             Controls.Add(btnOpen);
@@ -157,7 +158,7 @@
         private Button btnOpen;
         private ListView lvHistory;
         private TextBox txtHtml;
-        private Label lblGuild;      
+        private Label lblGuide;      
     }
    
 }
