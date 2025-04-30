@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Label lblOutput;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             btnCheck = new Button();
             btnClear = new Button();

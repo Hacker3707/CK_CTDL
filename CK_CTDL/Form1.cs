@@ -167,6 +167,7 @@ namespace CK_CTDL
                         }
                     }
                 }
+
                 lblGuide.Text = $"Đã xóa 1 file: [{selectedItem.Text}]";
                 lvHistory.Items.Remove(selectedItem);
             }
