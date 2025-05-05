@@ -249,6 +249,7 @@ namespace CK_CTDL
                     rear.Next = newNode;
                     rear = newNode;
                 }
+                Count++;
             }
 
             public T Dequeue()
@@ -257,12 +258,14 @@ namespace CK_CTDL
                 T item = front.Data;
                 front = front.Next;
                 if (front == null) rear = null;
+                Count--;
                 return item;
             }
 
             public bool IsEmpty() => front == null;
 
-            public void Clear() => front = rear = null;
+            public int Count = 0;
+            
 
         }
 
@@ -310,23 +313,35 @@ namespace CK_CTDL
                         // Thẻ đóng
                         string closeTagName = tagName.ToLower().Replace("/", "");
                         bool found = false;
-                        
+                        // Lưu các thẻ mở chưa tìm thấy
                         MyQueue<string> tempQueue = new MyQueue<string>();
 
                         // Tìm kiếm thẻ mở tương ứng với thẻ đóng
                         while (!queue.IsEmpty())
                         {
+
                             string openTag = queue.Dequeue();
                             string openTagName = GetTagName(openTag).ToLower();
                             if (openTagName == closeTagName)
                             {
-                                found = true;
-                                break;
+                                if (queue.Count == 0)
+                                {
+                                    found = true;
+                                    break;
+                                }
+                                else
+                                {
+                                    found = true;
+                                    errors.Enqueue($"❌ Lỗi: Phát hiện cặp thẻ <{openTagName}> và </{closeTagName}> sai trình tự");
+                                    break;
+                                }    
+
                             }
                             else
                             {
                                 tempQueue.Enqueue(openTag); // Lưu các thẻ mở chưa tìm thấy
                             }
+
                         }
 
                         // Khôi phục Queue (những thẻ mở không khớp)
