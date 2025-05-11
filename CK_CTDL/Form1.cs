@@ -386,7 +386,7 @@ namespace CK_CTDL
             }
             private static bool IsVoidTag(string tagName)
             {
-                foreach (var tag in voidTags)
+                foreach (string tag in voidTags)
                 {
                     if (tag == tagName)
                         return true;
