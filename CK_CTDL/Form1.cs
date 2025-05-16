@@ -1,10 +1,11 @@
 ﻿using System;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Drawing;
-using System.Windows.Forms;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.IO;
 using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using static CK_CTDL.MainForm;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CK_CTDL
 {
@@ -211,6 +212,7 @@ namespace CK_CTDL
             lblOutput.Text = $"Hiển thị kết quả từ: [{sourceName}] \n {result}";
             lblOutput.ForeColor = result.Contains("❌") ? Color.Red : Color.Green;
             AddToHistory(sourceName, result, htmlContent);
+
         }
 
         //====================== ADD TO HISTORY (Của ListView) ==========================
@@ -282,37 +284,49 @@ namespace CK_CTDL
             {
                 MyQueue<string> queue = new MyQueue<string>();  // Queue dùng để lưu trữ thẻ mở
                 MyQueue<string> errors = new MyQueue<string>();  // Queue dùng để lưu trữ lỗi
-                MatchCollection matches = Regex.Matches(html, @"<\s*(\/)?\s*([a-zA-Z][a-zA-Z0-9]*)\b([^<>]*)\/?\s*>");
+                MyQueue<string> matches = new MyQueue<string>(); // Queue dùng để lưu trữ các thẻ
+                Match match = Regex.Match(html, @"<\s*(\/|!)?\s*([a-zA-Z][a-zA-Z0-9]*)\b([^<>]*)\/?\s*>");
+                while (match.Success)
+                {
+                    // Đưa vào queue tự cài đặt (Node-based queue)
+                    matches.Enqueue(match.Value);
+
+                    // Qua thẻ kế tiếp
+                    match = match.NextMatch();
+                }
                 if (matches.Count == 0)
                 {
                     return "❌ Không phát hiện thẻ HTML nào.\n Đây có thể không phải là tài liệu HTML.";
                 }
-                foreach (Match match in matches)
+                while (!matches.IsEmpty())
                 {
-                    string tag = match.Value.Trim();
+                    string tag = matches.Dequeue().Trim();
 
                     // Bỏ qua doctype
                     if (tag.StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase))
                         continue;
+                    
 
                     // Bỏ qua self-closing tag
-                    if (tag.EndsWith("/>"))
-                        continue;
+                    if (tag.EndsWith("/>"))                  
+                        continue;              
 
                     string tagName = GetTagName(tag).ToLower();
-                    if (IsVoidTag(tagName)) continue;
+                    if (IsVoidTag(tagName))             
+                        continue;
+                    
 
                     // Nếu là thẻ mở
                     if (!tag.StartsWith("</"))
                     {
-                        queue.Enqueue(tag);  // Thêm thẻ mở vào Queue
-
+                        queue.Enqueue(tag); // Thêm thẻ mở vào Queue
                     }
                     else
                     {
                         // Thẻ đóng
                         string closeTagName = tagName.ToLower().Replace("/", "");
                         bool found = false;
+
                         // Lưu các thẻ mở chưa tìm thấy
                         MyQueue<string> tempQueue = new MyQueue<string>();
 
@@ -332,7 +346,7 @@ namespace CK_CTDL
                                 else
                                 {
                                     found = true;
-                                    errors.Enqueue($"❌ Lỗi: Phát hiện cặp thẻ <{openTagName}> và </{closeTagName}> sai trình tự");
+                                    errors.Enqueue($"❌ Lỗi: Phát hiện cặp thẻ <{openTagName}> và </{closeTagName}> sai trình tự.");
                                     break;
                                 }    
 
@@ -356,6 +370,7 @@ namespace CK_CTDL
                         }
                     }
                 }
+
 
                 // Nếu còn thẻ mở trong Queue, nghĩa là chúng chưa được đóng
                 while (!queue.IsEmpty())
@@ -396,7 +411,6 @@ namespace CK_CTDL
 
         }
     
-
 
         // ================= Thay đổi vị trí nhập ======================
 

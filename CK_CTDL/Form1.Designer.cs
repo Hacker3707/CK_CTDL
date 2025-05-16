@@ -143,7 +143,7 @@
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
-            Text = "HTML Validator";
+            Text = "HTML Validator (theo chuẩn HTML5)";
             Load += MainForm_Load;
             ResumeLayout(false);
             PerformLayout();
